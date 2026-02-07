@@ -1,0 +1,11 @@
+fastapi
+uvicorn
+psycopg2-binary
+python-dotenv
+pydantic
+scikit-learn
+numpy
+pytest
+httpx
+requests
+openai

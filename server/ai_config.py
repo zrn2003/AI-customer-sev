@@ -1,0 +1,56 @@
+
+# Enhanced Training Data for Severity Classifier
+# Format: (Text, Label [0=Low, 1=Medium, 2=High])
+
+TRAINING_DATA = [
+    # --- HIGH SEVERITY (02) ---
+    ("The app crashes every time I open settings", 2),
+    ("I cannot login to my account, password reset not working", 2),
+    ("Double charged for my subscription", 2),
+    ("Service is down completely", 2),
+    ("Data loss, my files are gone", 2),
+    ("System outage, 500 error on all pages", 2),
+    ("Security breach, I see someone else's data!", 2),
+    ("My account has been hacked", 2),
+    ("Payment failed but money deducted from bank", 2),
+    ("Critical bug in production, customers cannot checkout", 2),
+    ("API is throwing 403 Forbidden for all keys", 2),
+    ("I am being harassed by another user", 2),
+    ("Unauthorized transactions on my card", 2),
+    ("Application freezes on startup", 2),
+    ("Blank screen after login", 2),
+
+    # --- MEDIUM SEVERITY (01) ---
+    ("Loading is a bit slow today", 1),
+    ("Invoice not received yet", 1),
+    ("Cannot find the export button", 1),
+    ("Need help configuring the widget", 1),
+    ("Verification email took 10 minutes", 1),
+    ("How do I change my billing address?", 1),
+    ("Feature X is behaving inconsistently", 1),
+    ("Upgrade to Pro plan is not showing up", 1),
+    ("Mobile view is misaligned on iPhone", 1),
+    ("Search results are not relevant", 1),
+    ("I need a refund for last month (non-urgent)", 1),
+    ("Can you extend my trial by 2 days?", 1),
+    ("Dashboard is lagging when I have many items", 1),
+    ("Images are not loading in the gallery", 1),
+    ("Notification badge is stuck", 1),
+
+    # --- LOW SEVERITY (00) ---
+    ("How do I change my profile picture?", 0),
+    ("The color scheme is too bright", 0),
+    ("Suggestion: add dark mode", 0),
+    ("Where can I find the manual?", 0),
+    ("Typos in the about page", 0),
+    ("Just saying hi, great app!", 0),
+    ("When is the next feature release?", 0),
+    ("I have a suggestion for a new icon", 0),
+    ("Is there a student discount?", 0),
+    ("Can I change the font size?", 0),
+    ("Feedback: The layout looks nice", 0),
+    ("Where is your office located?", 0),
+    ("How do I delete my account? (Info)", 0),
+    ("Is there an Android app coming?", 0),
+    ("Minor text overlap in footer", 0),
+]

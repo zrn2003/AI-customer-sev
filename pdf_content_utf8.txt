@@ -1,0 +1,34 @@
+AI-Based Customer Complaint Impact & Resolution
+ Predictor
+1. Project Vision
+An AI-powered system to intelligently prioritize, predict, and assist in resolving customer complaints
+using NLP, ML, MCP, and PostgreSQL.
+2. User Personas
+Customers submit complaints. Support Agents resolve them using AI assistance. Admins monitor
+SLA, analytics, and system performance.
+3. User Journey
+Complaint submission → AI severity & priority prediction → MCP-assisted resolution → Human
+approval → Feedback loop.
+4. Core Pages
+Landing Page, Login/Register, Complaint Submission, Complaint Status, Agent Dashboard,
+Complaint Detail View, Analytics Dashboard.
+5. AI Capabilities
+Severity classification, resolution time prediction, priority scoring, SHAP explainability.
+6. MCP Integration
+MCP acts as an AI co-pilot suggesting resolution steps, fetching policies, drafting responses, and
+assisting agents with human-in-the-loop control.
+7. PostgreSQL Usage
+PostgreSQL stores users, complaints, AI predictions, MCP-assisted resolutions, and feedback
+ensuring auditability and reliability.
+8. Database Tables
+
+Users, Complaints, AI_Predictions, Resolutions, Resolution_Feedback.
+9. Backend Architecture
+Django + DRF backend with controlled MCP tools accessing PostgreSQL and AI services.
+10. Tech Stack
+Frontend: React, TypeScript, Tailwind CSS | Backend: Django, DRF | DB: PostgreSQL | AI: Python,
+SHAP, MCP
+11. Why This Project Stands Out
+Combines predictive AI, generative AI, explainability, human-in-the-loop design, and
+enterprise-grade architecture.
+
