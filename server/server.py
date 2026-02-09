@@ -47,9 +47,69 @@ app.add_middleware(
 # ==========================================
 # AI ENGINE (Severity Classifier)
 # ==========================================
+class KeywordSeverityModel:
+    def __init__(self):
+        self.keyword_map = {
+            2: [
+                "outage", "breach", "hacked", "data loss", "fraud", "unauthorized",
+                "double charged", "charged twice", "payment failed", "cannot login",
+                "service down", "crash", "crashes", "blocked", "critical"
+            ],
+            1: [
+                "slow", "lag", "delayed", "not received", "missing",
+                "issue", "inconsistent", "misaligned", "bug", "error"
+            ],
+        }
+
+    def predict(self, text: str) -> int:
+        lowered = text.lower()
+        for label in sorted(self.keyword_map.keys(), reverse=True):
+            if any(keyword in lowered for keyword in self.keyword_map[label]):
+                return label
+        return 0
+
+
+class LocalResolutionModel:
+    def __init__(self):
+        self.training_data = [
+            (
+                "payment failed but money deducted",
+                "We have flagged the charge and will verify the transaction with our billing provider. If confirmed as duplicate, a refund will be issued within 3-5 business days."
+            ),
+            (
+                "cannot login or reset password",
+                "Please use the 'Forgot Password' option to reset your credentials. If 2FA is still failing, we can verify your account and reset it on our end."
+            ),
+            (
+                "app crashes on startup",
+                "Please update to the latest version and clear the application cache. If the crash persists, share the device model and OS version so we can reproduce and escalate."
+            ),
+            (
+                "feature request or suggestion",
+                "We have logged your request for our quarterly roadmap review. We'll keep you updated as we evaluate it."
+            ),
+        ]
+        self._train()
+
+    def _train(self):
+        texts, responses = zip(*self.training_data)
+        self.vectorizer = TfidfVectorizer()
+        self.text_vectors = self.vectorizer.fit_transform(texts)
+        self.responses = responses
+
+    def suggest(self, complaint_text: str) -> str:
+        if not complaint_text.strip():
+            return "We will review the details and follow up with next steps shortly."
+        query_vector = self.vectorizer.transform([complaint_text])
+        similarities = (self.text_vectors * query_vector.T).toarray()
+        best_index = int(np.argmax(similarities))
+        return self.responses[best_index]
+
+
 class SeverityAI:
     def __init__(self):
         self.model = None
+        self.keyword_model = KeywordSeverityModel()
         # Seed Training Data: (Text, SeverityLabel [0=Low, 1=Medium, 2=High])
         # In a real app, this would come from a database or CSV
         try:
@@ -85,13 +145,17 @@ class SeverityAI:
         # Get probabilities to calculate a "Score" (1-10)
         probs = self.model.predict_proba([text])[0]
         confidence = np.max(probs)
+        keyword_label = self.keyword_model.predict(text)
+        final_label = max(prediction, keyword_label)
+        if keyword_label > prediction:
+            confidence = max(confidence, 0.85)
         
         # Map class to Severity Score (1-10) heuristics
-        if prediction == 2: # High
+        if final_label == 2: # High
             score = 8 + int(confidence * 2) # 8-10
             priority = "High"
             est_time = "2-4 hours"
-        elif prediction == 1: # Medium
+        elif final_label == 1: # Medium
             score = 5 + int(confidence * 2) # 5-7
             priority = "Medium"
             est_time = "24 hours"
@@ -139,8 +203,9 @@ class PolicyLookupTool(AgentTool):
         return " | ".join(results)
 
 class SolutionGeneratorTool(AgentTool):
-    def __init__(self):
-        super().__init__("SolutionDraft", "Drafts a response using Standard Templates (Free)")
+    def __init__(self, local_model: LocalResolutionModel):
+        super().__init__("SolutionDraft", "Drafts a response using a local model or templates")
+        self.local_model = local_model
         
     def execute(self, complaint_text, policy_context, severity_score):
         # Heuristic to determine tone based on severity
@@ -183,8 +248,9 @@ class SolutionGeneratorTool(AgentTool):
                 return completion.choices[0].message.content
                 
             except Exception as e:
-                print(f"⚠️ OpenRouter Error: {e}. Fallback to template.")
-                # Fallback to template below
+                print(f"⚠️ OpenRouter Error: {e}. Fallback to local model.")
+
+        local_suggestion = self.local_model.suggest(complaint_text)
 
         # Template-based Generation (Fallback)
         return f"""Dear Customer,
@@ -196,6 +262,9 @@ Regarding your issue: "{complaint_text}"
 Based on our assessment:
 {policy_context}
 
+Recommended action:
+{local_suggestion}
+
 We are prioritizing this request. Please allow us some time to verify the details and resolve this for you.
 
 Best Regards,
@@ -203,7 +272,8 @@ Support Team"""
 
 # Initialize Tools
 policy_tool = PolicyLookupTool()
-solution_tool = SolutionGeneratorTool()
+local_resolution_model = LocalResolutionModel()
+solution_tool = SolutionGeneratorTool(local_resolution_model)
 
 def generate_ai_suggestion(complaint_text: str) -> str:
     """
