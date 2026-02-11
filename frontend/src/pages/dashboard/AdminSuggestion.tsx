@@ -27,8 +27,14 @@ const AdminSuggestion: React.FC = () => {
                 getComplaintSolution(complaintId),
                 getComplaint(complaintId)
             ]);
-            setAiSolution(solutionData.suggestion);
             setComplaint(complaintData);
+
+            // If resolution exists, use it. Otherwise use AI suggestion.
+            if (complaintData.resolution) {
+                setAiSolution(complaintData.resolution);
+            } else {
+                setAiSolution(solutionData.suggestion);
+            }
         } catch (err) {
             console.error("Failed to fetch data", err);
             setError("Failed to load details.");

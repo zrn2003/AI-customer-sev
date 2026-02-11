@@ -1,4 +1,3 @@
-
 # Enhanced Training Data for Severity Classifier
 # Format: (Text, Label [0=Low, 1=Medium, 2=High])
 
@@ -19,7 +18,6 @@ TRAINING_DATA = [
     ("Unauthorized transactions on my card", 2),
     ("Application freezes on startup", 2),
     ("Blank screen after login", 2),
-
     # --- MEDIUM SEVERITY (01) ---
     ("Loading is a bit slow today", 1),
     ("Invoice not received yet", 1),
@@ -36,7 +34,6 @@ TRAINING_DATA = [
     ("Dashboard is lagging when I have many items", 1),
     ("Images are not loading in the gallery", 1),
     ("Notification badge is stuck", 1),
-
     # --- LOW SEVERITY (00) ---
     ("How do I change my profile picture?", 0),
     ("The color scheme is too bright", 0),
