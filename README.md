@@ -20,13 +20,33 @@ This repository contains an intelligent customer support application that levera
 
 ## 🛠️ Technology Stack
 
-### Backend
-- **Framework**: Django & Django REST Framework (Python)
-- **Database**: PostgreSQL
-- **AI/ML**:
-  - **Scikit-Learn**: For keyword-based severity classification (TF-IDF + Naive Bayes).
-  - **OpenAI/OpenRouter API**: For bridging with LLMs (Google Gemini Flash Lite).
-- **Authentication**: JWT / Session Authentication (Django Auth).
+### Backend (Django)
+The backend is built using **Django** and **Django REST Framework (DRF)**, providing a robust, scalable, and secure API foundation.
+
+#### 1. Project Structure
+- **`supportflow/`**: The main project configuration directory containing `settings.py`, `urls.py`, and WSGI/ASGI configs.
+- **`api/`**: The core application module managing all business logic.
+  - **`models.py`**: Defines the database schema (Users, Complaints, History).
+  - **`views.py`**: Contains the API controllers for handling requests (Auth, Complaints, AI prediction).
+  - **`serializers.py`**: Handles data validation and transformation (JSON <-> Python Objects).
+  - **`ai_engine.py`**: Encapsulates the ML logic for severity scoring and resolution drafting.
+
+#### 2. Key Components
+- **Custom User Model**: Extends `AbstractUser` to support role-based access (Admin/Customer) and email-based login.
+- **RESTful API**:
+  - `POST /api/auth/register`: User registration with role assignment.
+  - `POST /api/auth/login`: Authenticates users and returns user details.
+  - `GET/POST /api/complaints/`: Lists complaints (filtered by user/role) or creates new ones.
+  - `PATCH /api/complaints/{id}/`: Updates status or adds resolutions.
+- **AI Integration**:
+  - The `SeverityAI` class in `ai_engine.py` loads scikit-learn models to predict severity scores on-the-fly.
+  - `generate_ai_suggestion` orchestrates the fetching of policy context and drafting of responses via LLMs or local templates.
+
+#### 3. Database & Security
+- **PostgreSQL**: Used as the primary data store for production-grade reliability.
+- **ORM**: Django ORM abstracts SQL queries, preventing SQL injection.
+- **CORS Headers**: Configured to safely allow requests from the React frontend.
+- **Environment Variables**: Sensitive data (DB credentials, API keys) are managed via `.env` files.
 
 ### Frontend
 - **Framework**: React (Vite)
