@@ -31,7 +31,7 @@ function App() {
     <Router>
       <AuthProvider>
         <AppRoutes />
-        {/* <ToastContainer
+        <ToastContainer
           position="top-center"
           autoClose={5000}
           hideProgressBar={false}
@@ -41,9 +41,9 @@ function App() {
           pauseOnFocusLoss
           draggable
           pauseOnHover
-          theme="dark"
+          theme="light"
           transition={Bounce}
-        /> */}
+        />
       </AuthProvider>
     </Router>
   );

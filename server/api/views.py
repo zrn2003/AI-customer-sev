@@ -36,6 +36,7 @@ def register(request):
             }, status=status.HTTP_201_CREATED)
         except Exception as e:
             return Response({'detail': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['POST'])
@@ -161,3 +162,4 @@ def suggest_resolution_view(request, pk):
     # Check if existing resolution model exists logic
     suggestion = generate_ai_suggestion(complaint.description)
     return Response({"suggestion": suggestion})
+

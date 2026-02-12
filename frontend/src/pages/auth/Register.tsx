@@ -24,9 +24,37 @@ const Register: React.FC = () => {
             await register(formData.name, formData.email, formData.password);
             toast.success("Account created successfully! Please login.");
             navigate('/login');
-        } catch (error) {
+        } catch (error: any) {
             console.error("Registration failed", error);
-            toast.error("Registration failed. Please try again.");
+            let message = "Registration failed. Please try again.";
+
+            if (error.response?.data) {
+                const data = error.response.data;
+                if (data.detail) {
+                    // Check if it's the specific "email already registered" from the serializer/model
+                    message = data.detail;
+                } else if (typeof data === 'object') {
+                    // Handle DRF { field: [error] } format
+                    const entries = Object.entries(data);
+                    if (entries.length > 0) {
+                        const [field, errors] = entries[0];
+                        const errorMsg = Array.isArray(errors) ? errors[0] : errors;
+                        message = `${field}: ${errorMsg}`;
+
+                        // Make email errors friendlier
+                        const lowerError = typeof errorMsg === 'string' ? errorMsg.toLowerCase() : '';
+                        if (field === 'email' && (lowerError.includes('exists') || lowerError.includes('unique'))) {
+                            message = "This email address is already registered.";
+                        }
+                    }
+                } else if (typeof data === 'string') {
+                    message = data;
+                }
+            } else if (error.message) {
+                message = error.message;
+            }
+
+            toast.error(message);
         }
     };
 
