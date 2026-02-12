@@ -2,7 +2,7 @@
 
 This repository contains an intelligent customer support application that leverages Artificial Intelligence to automatically categorize complaints, assign severity scores (1-10), and draft resolution responses using Large Language Models (LLM).
 
-**Repository**: [https://github.com/Trups09/AI-based-Customer-Support-and-Resolution-Predictor.git](https://github.com/Trups09/AI-based-Customer-Support-and-Resolution-Predictor.git)
+**Repository**: [https://github.com/zrn2003/AI-customer-sev](https://github.com/zrn2003/AI-customer-sev)
 
 ---
 
@@ -65,8 +65,8 @@ The backend is built using **Django** and **Django REST Framework (DRF)**, provi
 
 ### 1. Clone the Repository
 ```bash
-git clone https://github.com/Trups09/AI-based-Customer-Support-and-Resolution-Predictor.git
-cd AI-based-Customer-Support-and-Resolution-Predictor
+git clone https://github.com/zrn2003/AI-customer-sev
+cd AI-customer-sev
 ```
 
 ### 2. Backend Setup
