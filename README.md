@@ -9,7 +9,7 @@ This repository contains an intelligent customer support application that levera
 ## 🚀 Features
 
 - **Automated Severity Scoring**: Analyzes complaint text using a local NLP model (Scikit-Learn) to assign a severity score (Low/Medium/High) and estimate resolution time.
-- **AI-Drafted Resolutions**: Generates professional, policy-aware response drafts using Google Gemini (via OpenRouter) or local fallback templates.
+- **AI-Drafted Resolutions**: Generates professional, policy-aware response drafts using a custom **Hugging Face Space** integration (powered by Google Gemini).
 - **Dynamic Dashboards**:
   - **Customer Panel**: Submit complaints, track status, and view resolutions.
   - **Admin Console**: Prioritize tickets based on AI severity, review AI suggestions, and resolve issues.
@@ -40,7 +40,7 @@ The backend is built using **Django** and **Django REST Framework (DRF)**, provi
   - `PATCH /api/complaints/{id}/`: Updates status or adds resolutions.
 - **AI Integration**:
   - The `SeverityAI` class in `ai_engine.py` loads scikit-learn models to predict severity scores on-the-fly.
-  - `generate_ai_suggestion` orchestrates the fetching of policy context and drafting of responses via LLMs or local templates.
+  - `generate_ai_suggestion` utilizes `gradio_client` to connect to the hosted [Customer-Support-ai](https://huggingface.co/spaces/devi1675/Customer-Support-ai) Space for instant resolution drafting.
 
 #### 3. Database & Security
 - **PostgreSQL**: Used as the primary data store for production-grade reliability.
@@ -99,8 +99,8 @@ DB_PASSWORD=your_postgres_password
 DB_HOST=localhost
 DB_PORT=5432
 
-# AI Configuration (Optional for LLM features)
-OPENROUTER_API_KEY=your_openrouter_api_key_here
+# AI Configuration
+# No API Keys required for basic operation (Uses public Hugging Face Space)
 
 # Security
 SECRET_KEY=django-insecure-your-secret-key
@@ -164,4 +164,4 @@ docker-compose up --build
 The system uses a hybrid AI approach:
 1. **KeywordSeverityModel**: A rule-based classifier for immediate triage of critical issues (e.g., "outage", "hack").
 2. **LocalResolutionModel**: A TF-IDF similarity search against a knowledge base of past solutions.
-3. **LLM Integration**: Uses OpenRouter to access large language models for drafting human-like email responses based on company policy.
+3. **Hugging Face Integration**: Connects to `devi1675/Customer-Support-ai` via Gradio Client to leverage a fine-tuned Gemini model for generating empathetic and accurate complaint resolutions.
